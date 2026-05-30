@@ -216,3 +216,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# open-recognition: project-specific
+.ruff_cache/
+.mypy_cache/
+.aws_cache/
+calibration*.csv
+.idea/

@@ -1,0 +1,13 @@
+.git
+.venv
+.idea
+__pycache__
+*.pyc
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.aws_cache
+tests
+docs
+calibration.csv
+*.md

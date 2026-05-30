@@ -1,0 +1,31 @@
+services:
+  app:
+    build: .
+    container_name: face_rekon_app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      FACE_REKON_DATABASE_URL: postgresql://face_rekon:face_rekon@postgres:5432/face_rekon
+    ports:
+      - "8080:8080"
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: face_rekon_pg
+    environment:
+      POSTGRES_USER: face_rekon
+      POSTGRES_PASSWORD: face_rekon
+      POSTGRES_DB: face_rekon
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U face_rekon -d face_rekon"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  pg_data:
