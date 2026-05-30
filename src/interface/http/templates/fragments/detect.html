@@ -1,0 +1,17 @@
+{% if r.FaceDetails %}
+<p class="ok">{{ r.FaceDetails|length }} face(s) detected.</p>
+<div class="stage">
+  <img src="{{ img }}" alt="uploaded image">
+  {% for f in r.FaceDetails %}
+    {% set b = f.BoundingBox %}
+    <div class="box" style="left:{{ b.Left*100 }}%;top:{{ b.Top*100 }}%;width:{{ b.Width*100 }}%;height:{{ b.Height*100 }}%">
+      <span class="boxtag">{{ '%.1f'|format(f.Confidence) }}%</span>
+    </div>
+    {% for lm in f.Landmarks %}
+      <span class="dot {{ lm.Type }}" style="left:{{ lm.X*100 }}%;top:{{ lm.Y*100 }}%"></span>
+    {% endfor %}
+  {% endfor %}
+</div>
+{% else %}
+<p class="warn">No faces detected.</p>
+{% endif %}

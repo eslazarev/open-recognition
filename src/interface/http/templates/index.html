@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>open-recognition · Faces Playground</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/htmx.min.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1>open-<span class="accent">recognition</span></h1>
+    <p class="tag">Raw API reference: <a href="/docs">/docs</a>.</p>
+  </div>
+</header>
+
+<nav class="wrap">
+  <div class="tabs">
+    <a href="#detect" class="active">Detect</a>
+    <a href="#compare">Compare</a>
+    <a href="#collections">Collections</a>
+    <a href="#index">Index</a>
+    <a href="#faces">Faces</a>
+    <a href="#search">Search</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section id="detect" class="card">
+    <h2>Detect faces</h2>
+    <p class="hint">YuNet finds faces and returns box + confidence + 5 landmarks.</p>
+    <form hx-post="/ui/detect" hx-encoding="multipart/form-data"
+          hx-target="#detect-out" hx-indicator="#detect-spin">
+      <input type="file" name="image" accept="image/*" required>
+      <button type="submit">Detect</button>
+      <span id="detect-spin" class="htmx-indicator spin">…</span>
+    </form>
+    <div id="detect-out" class="out"></div>
+  </section>
+
+  <section id="compare" class="card">
+    <h2>Compare faces</h2>
+    <p class="hint">Similarity between the largest face in each image (0 = different, 100 = same).</p>
+    <form hx-post="/ui/compare" hx-encoding="multipart/form-data"
+          hx-target="#compare-out" hx-indicator="#compare-spin">
+      <label>Source <input type="file" name="source" accept="image/*" required></label>
+      <label>Target <input type="file" name="target" accept="image/*" required></label>
+      <label class="num">Threshold <input type="number" name="threshold" value="0" min="0" max="100" step="1"></label>
+      <button type="submit">Compare</button>
+      <span id="compare-spin" class="htmx-indicator spin">…</span>
+    </form>
+    <div id="compare-out" class="out"></div>
+  </section>
+
+  <section id="collections" class="card">
+    <h2>Collections</h2>
+    <form hx-post="/ui/collections/create" hx-target="#collections-out" hx-indicator="#coll-spin">
+      <input type="text" name="collection_id" placeholder="collection id, e.g. team" required>
+      <button type="submit">Create</button>
+      <button type="button" hx-get="/ui/collections" hx-target="#collections-out" class="ghost">Refresh</button>
+      <span id="coll-spin" class="htmx-indicator spin">…</span>
+    </form>
+    <div id="collections-out" class="out" hx-get="/ui/collections" hx-trigger="load"></div>
+    <div id="describe-out" class="out"></div>
+  </section>
+
+  <section id="index" class="card">
+    <h2>Index faces</h2>
+    <p class="hint">Detect → quality-filter → embed → store. Only the embedding is kept, never the image.</p>
+    <form hx-post="/ui/index" hx-encoding="multipart/form-data"
+          hx-target="#index-out" hx-indicator="#index-spin">
+      <select name="collection_id" required
+              hx-get="/ui/collections/options" hx-trigger="load, collections-changed from:body"
+              hx-target="this" hx-swap="innerHTML">
+        <option value="" disabled selected>— select a collection —</option>
+      </select>
+      <input type="file" name="image" accept="image/*" required>
+      <input type="text" name="external_image_id" placeholder="external image id (label)">
+      <label class="num">Max faces <input type="number" name="max_faces" value="1" min="1" max="20"></label>
+      <label class="num">Quality
+        <select name="quality_filter">
+          <option>AUTO</option><option>NONE</option><option>LOW</option>
+          <option>MEDIUM</option><option>HIGH</option>
+        </select>
+      </label>
+      <button type="submit">Index</button>
+      <span id="index-spin" class="htmx-indicator spin">…</span>
+    </form>
+    <div id="index-out" class="out"></div>
+  </section>
+
+  <section id="faces" class="card">
+    <h2>Faces in a collection</h2>
+    <form hx-post="/ui/faces" hx-target="#faces-out" hx-indicator="#faces-spin">
+      <select name="collection_id" required
+              hx-get="/ui/collections/options" hx-trigger="load, collections-changed from:body"
+              hx-target="this" hx-swap="innerHTML">
+        <option value="" disabled selected>— select a collection —</option>
+      </select>
+      <button type="submit">List faces</button>
+      <span id="faces-spin" class="htmx-indicator spin">…</span>
+    </form>
+    <div id="faces-out" class="out"></div>
+  </section>
+
+  <section id="search" class="card">
+    <h2>Search by image</h2>
+    <p class="hint">Embed the largest face in the query image, return nearest enrolled faces.</p>
+    <form hx-post="/ui/search" hx-encoding="multipart/form-data"
+          hx-target="#search-out" hx-indicator="#search-spin">
+      <select name="collection_id" required
+              hx-get="/ui/collections/options" hx-trigger="load, collections-changed from:body"
+              hx-target="this" hx-swap="innerHTML">
+        <option value="" disabled selected>— select a collection —</option>
+      </select>
+      <input type="file" name="image" accept="image/*" required>
+      <label class="num">Threshold <input type="number" name="threshold" value="80" min="0" max="100"></label>
+      <label class="num">Max <input type="number" name="max_faces" value="5" min="1" max="20"></label>
+      <button type="submit">Search</button>
+      <span id="search-spin" class="htmx-indicator spin">…</span>
+    </form>
+    <div id="search-out" class="out"></div>
+  </section>
+
+</main>
+
+<script>
+  // Tabbed navigation: show one section at a time. Degrades to anchor jumps
+  // if JS is off (sections start visible; only this script hides the inactive).
+  (function () {
+    const tabs = document.querySelectorAll('.tabs a');
+    const sections = document.querySelectorAll('main > section');
+    function show(id) {
+      sections.forEach(s => { s.hidden = s.id !== id; });
+      tabs.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+      if (history.replaceState) history.replaceState(null, '', '#' + id);
+    }
+    tabs.forEach(a => a.addEventListener('click', e => {
+      e.preventDefault();
+      show(a.getAttribute('href').slice(1));
+    }));
+    const wanted = (location.hash || '#detect').slice(1);
+    show(document.getElementById(wanted) ? wanted : 'detect');
+  })();
+</script>
+</body>
+</html>

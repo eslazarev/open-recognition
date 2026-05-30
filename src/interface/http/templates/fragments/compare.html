@@ -1,0 +1,16 @@
+{% set m = r.FaceMatches[0] if r.FaceMatches else None %}
+{% set sim = m.Similarity if m else None %}
+<div class="pair">
+  <figure><img src="{{ source_img }}" alt="source"><figcaption>source</figcaption></figure>
+  <div class="verdict {{ 'good' if (sim is not none and sim >= 80) else 'bad' }}">
+    {% if sim is not none %}
+      <div class="pct">{{ '%.1f'|format(sim) }}%</div>
+      <div class="label">{{ 'same person' if sim >= 80 else 'not the same person' }}</div>
+      {% if sim < 80 %}<div class="sub">below the 80% match threshold</div>{% endif %}
+    {% else %}
+      <div class="pct">—</div>
+      <div class="label">no face above threshold</div>
+    {% endif %}
+  </div>
+  <figure><img src="{{ target_img }}" alt="target"><figcaption>target</figcaption></figure>
+</div>

@@ -1,0 +1,25 @@
+<div class="stage">
+  <img src="{{ img }}" alt="query image">
+  {% set b = r.SearchedFaceBoundingBox %}
+  <div class="box" style="left:{{ b.Left*100 }}%;top:{{ b.Top*100 }}%;width:{{ b.Width*100 }}%;height:{{ b.Height*100 }}%">
+    <span class="boxtag">query · {{ '%.1f'|format(r.SearchedFaceConfidence) }}%</span>
+  </div>
+</div>
+{% if r.FaceMatches %}
+<p class="ok">{{ r.FaceMatches|length }} match(es):</p>
+<table>
+  <thead><tr><th>#</th><th>ExternalImageId</th><th>Similarity</th><th>FaceId</th></tr></thead>
+  <tbody>
+  {% for m in r.FaceMatches %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td><b>{{ m.Face.ExternalImageId or '—' }}</b></td>
+      <td class="{{ 'good-text' if m.Similarity >= 80 else '' }}">{{ '%.1f'|format(m.Similarity) }}%</td>
+      <td class="mono">{{ m.Face.FaceId }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="warn">No match above the threshold.</p>
+{% endif %}

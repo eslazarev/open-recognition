@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import asyncio
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import AsyncIterator
+from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 from infrastructure.cv.sface_recognizer import SFaceRecognizer
 from infrastructure.cv.yunet_detector import YuNetDetector
@@ -14,7 +16,10 @@ from infrastructure.persistence.collection_repo import PgCollectionRepository
 from infrastructure.persistence.db import create_pool, run_migrations
 from infrastructure.persistence.face_repo import PgFaceRepository
 from interface.http.openapi import build_openapi
+from interface.http.ui import router as ui_router
 from interface.http.wire import router
+
+_STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 
 @asynccontextmanager
@@ -42,6 +47,9 @@ def create_app() -> FastAPI:
         description="Self-hosted, boto3-compatible AWS Rekognition Faces API.",
         lifespan=lifespan,
     )
+    # HTMX playground (/ui) + its assets, before the AWS catch-all router.
+    app.mount("/static", StaticFiles(directory=str(_STATIC_DIR)), name="static")
+    app.include_router(ui_router)
     app.include_router(router)
     # Serve our hand-built spec (the AWS JSON-1.1 protocol doesn't describe
     # itself via FastAPI's route introspection) at /openapi.json and /docs.

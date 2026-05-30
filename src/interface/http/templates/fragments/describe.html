@@ -1,0 +1,7 @@
+<div class="kv">
+  <h3><code>{{ collection_id }}</code></h3>
+  <div><span>Faces</span><b>{{ r.FaceCount }}</b></div>
+  <div><span>Model</span><b>{{ r.FaceModelVersion }}</b></div>
+  <div><span>ARN</span><b class="mono">{{ r.CollectionArn }}</b></div>
+  <div><span>Created</span><b>{{ '%.0f'|format(r.CreationTimestamp) }}</b></div>
+</div>

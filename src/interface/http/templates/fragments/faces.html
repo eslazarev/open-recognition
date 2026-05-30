@@ -1,0 +1,22 @@
+{% if r.Faces %}
+<p class="ok">{{ r.Faces|length }} face(s) in <code>{{ collection_id }}</code>.</p>
+<table>
+  <thead><tr><th>FaceId</th><th>ExternalImageId</th><th>Confidence</th><th></th></tr></thead>
+  <tbody>
+  {% for f in r.Faces %}
+    <tr>
+      <td class="mono">{{ f.FaceId }}</td>
+      <td>{{ f.ExternalImageId or '—' }}</td>
+      <td>{{ '%.1f'|format(f.Confidence) }}%</td>
+      <td class="row-actions">
+        <button class="danger" hx-post="/ui/faces/delete"
+                hx-vals='{"collection_id": "{{ collection_id }}", "face_id": "{{ f.FaceId }}"}'
+                hx-target="#faces-out" hx-confirm="Delete this face?">delete</button>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="muted">No faces in <code>{{ collection_id }}</code> yet — index some above.</p>
+{% endif %}

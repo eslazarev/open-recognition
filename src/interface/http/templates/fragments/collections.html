@@ -1,0 +1,22 @@
+{% if r.CollectionIds %}
+<table>
+  <thead><tr><th>Collection</th><th>Model</th><th></th></tr></thead>
+  <tbody>
+  {% for cid in r.CollectionIds %}
+    <tr>
+      <td><code>{{ cid }}</code></td>
+      <td class="muted">{{ r.FaceModelVersions[loop.index0] }}</td>
+      <td class="row-actions">
+        <button class="ghost" hx-post="/ui/collections/describe"
+                hx-vals='{"collection_id": "{{ cid }}"}' hx-target="#describe-out">describe</button>
+        <button class="danger" hx-post="/ui/collections/delete"
+                hx-vals='{"collection_id": "{{ cid }}"}' hx-target="#collections-out"
+                hx-confirm="Delete '{{ cid }}' and all its faces?">delete</button>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="muted">No collections yet — create one above.</p>
+{% endif %}

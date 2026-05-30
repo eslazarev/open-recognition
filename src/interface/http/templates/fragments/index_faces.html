@@ -1,0 +1,36 @@
+<p class="ok">
+  Indexed {{ r.FaceRecords|length }} face(s){% if r.UnindexedFaces %},
+  rejected {{ r.UnindexedFaces|length }}{% endif %}.
+</p>
+<div class="stage">
+  <img src="{{ img }}" alt="indexed image">
+  {% for fr in r.FaceRecords %}
+    {% set b = fr.FaceDetail.BoundingBox %}
+    <div class="box" style="left:{{ b.Left*100 }}%;top:{{ b.Top*100 }}%;width:{{ b.Width*100 }}%;height:{{ b.Height*100 }}%">
+      <span class="boxtag">{{ fr.Face.ExternalImageId or 'indexed' }}</span>
+    </div>
+  {% endfor %}
+  {% for uf in r.UnindexedFaces %}
+    {% set b = uf.FaceDetail.BoundingBox %}
+    <div class="box bad" style="left:{{ b.Left*100 }}%;top:{{ b.Top*100 }}%;width:{{ b.Width*100 }}%;height:{{ b.Height*100 }}%">
+      <span class="boxtag bad">{{ uf.Reasons|join(', ') }}</span>
+    </div>
+  {% endfor %}
+</div>
+{% if r.FaceRecords %}
+<table>
+  <thead><tr><th>FaceId</th><th>ExternalImageId</th><th>Confidence</th></tr></thead>
+  <tbody>
+  {% for fr in r.FaceRecords %}
+    <tr>
+      <td class="mono">{{ fr.Face.FaceId }}</td>
+      <td>{{ fr.Face.ExternalImageId or '—' }}</td>
+      <td>{{ '%.1f'|format(fr.Face.Confidence) }}%</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% if r.UnindexedFaces %}
+<p class="warn">Rejected: {% for uf in r.UnindexedFaces %}{{ uf.Reasons|join(', ') }}{% if not loop.last %}; {% endif %}{% endfor %}</p>
+{% endif %}

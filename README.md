@@ -57,11 +57,14 @@ curl -s http://localhost:8080/ \
 # {"FaceDetails":[{"BoundingBox":{...},"Confidence":99.5,"Landmarks":[...]}]}
 ```
 
-Interactive docs live at **`/docs`** (Swagger UI) and the spec is served at
-`/openapi.json` — also checked in at [`docs/openapi.json`](docs/openapi.json).
-For exploration the server accepts `POST /<Action>` (e.g. `POST /DetectFaces`)
-as an alias, which is what Swagger's "Try it out" uses; boto3 keeps using the
-canonical `POST /` + header.
+Prefer clicking to curling? A **Faces Playground** lives at **`/ui`** — upload
+an image and see detected faces with boxes and landmarks, create collections,
+index, search, and compare, all in the browser (HTMX, no build step). The raw
+API reference is the Swagger UI at **`/docs`**, with the spec at `/openapi.json`
+— also checked in at [`docs/openapi.json`](docs/openapi.json). For exploration
+the server accepts `POST /<Action>` (e.g. `POST /DetectFaces`) as an alias,
+which is what Swagger's "Try it out" uses; boto3 keeps using the canonical
+`POST /` + header.
 
 Behind the scenes it's [YuNet] for detection, [SFace] for 128-d embeddings,
 and pgvector's HNSW index for sub-millisecond search. Embeddings, not images,
@@ -77,6 +80,7 @@ are stored.
 - [What you get](#what-you-get)
 - [Quick start](#quick-start)
 - [Try it on real faces](#try-it-on-real-faces)
+- [Web playground](#web-playground)
 - [Supported operations](#supported-operations)
 - [How a request actually flows](#how-a-request-actually-flows)
 - [Architecture](#architecture)
@@ -308,6 +312,32 @@ them; pick ones with at least two photos), and `--threshold` is the AWS-style
 `FaceMatchThreshold`.
 
 [LFW]: https://vis-www.cs.umass.edu/lfw/
+
+---
+
+## Web playground
+
+The server also ships a browser UI at **`/ui`** — a self-contained HTMX
+playground (no build step, no JS framework) covering every operation. Upload an
+image and see detected faces with boxes and landmarks, manage collections,
+index, search, and compare, without writing a line of code. It posts to the
+same handlers as the API (via the `POST /<Action>` aliases); the raw reference
+stays at `/docs` (Swagger).
+
+<table>
+<tr>
+<td width="50%"><img src="docs/img/ui/detect.png" alt="Detect tab"><br><sub><b>Detect</b> — box, confidence, and 5 landmarks drawn on the upload</sub></td>
+<td width="50%"><img src="docs/img/ui/compare.png" alt="Compare tab"><br><sub><b>Compare</b> — similarity verdict between two faces</sub></td>
+</tr>
+<tr>
+<td><img src="docs/img/ui/search.png" alt="Search tab"><br><sub><b>Search</b> — query image against an enrolled collection</sub></td>
+<td><img src="docs/img/ui/faces.png" alt="Faces tab"><br><sub><b>Faces</b> — what's enrolled in a collection</sub></td>
+</tr>
+<tr>
+<td><img src="docs/img/ui/index.png" alt="Index tab"><br><sub><b>Index</b> — enrol a face under a label</sub></td>
+<td><img src="docs/img/ui/collections.png" alt="Collections tab"><br><sub><b>Collections</b> — create, describe, delete</sub></td>
+</tr>
+</table>
 
 ---
 
