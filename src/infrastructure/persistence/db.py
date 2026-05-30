@@ -8,7 +8,7 @@ from pathlib import Path
 import asyncpg
 from pgvector.asyncpg import register_vector
 
-DEFAULT_DSN = "postgresql://face_rekon:face_rekon@localhost:5432/face_rekon"
+DEFAULT_DSN = "postgresql://open_recognition:open_recognition@localhost:5432/open_recognition"
 
 # Project root is three levels above this file:
 #   src/infrastructure/persistence/db.py
@@ -16,7 +16,7 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 
 def dsn() -> str:
-    return os.environ.get("FACE_REKON_DATABASE_URL", DEFAULT_DSN)
+    return os.environ.get("OPEN_RECOGNITION_DATABASE_URL", DEFAULT_DSN)
 
 
 async def _init_connection(conn: asyncpg.Connection) -> None:
@@ -32,7 +32,7 @@ def run_migrations() -> None:
     from alembic.command import upgrade
     from alembic.config import Config
 
-    ini = os.environ.get("FACE_REKON_ALEMBIC_INI") or str(
+    ini = os.environ.get("OPEN_RECOGNITION_ALEMBIC_INI") or str(
         _PROJECT_ROOT / "alembic.ini"
     )
     cfg = Config(ini)

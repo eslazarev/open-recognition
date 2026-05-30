@@ -1,6 +1,6 @@
 """Alembic environment.
 
-DSN is resolved from `FACE_REKON_DATABASE_URL` (same env var the
+DSN is resolved from `OPEN_RECOGNITION_DATABASE_URL` (same env var the
 app uses), with the asyncpg-style scheme rewritten to psycopg3 for
 the sync SQLAlchemy engine alembic needs.
 """

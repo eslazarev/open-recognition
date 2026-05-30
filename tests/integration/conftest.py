@@ -40,20 +40,20 @@ def postgres_dsn() -> Iterator[str]:
 
     container = PostgresContainer(
         image="pgvector/pgvector:pg16",
-        username="face_rekon",
-        password="face_rekon",
-        dbname="face_rekon",
+        username="open_recognition",
+        password="open_recognition",
+        dbname="open_recognition",
     )
     container.start()
     try:
         host = container.get_container_host_ip()
         port = container.get_exposed_port(5432)
-        dsn = f"postgresql://face_rekon:face_rekon@{host}:{port}/face_rekon"
+        dsn = f"postgresql://open_recognition:open_recognition@{host}:{port}/open_recognition"
 
         # Point both the app code and any inline asyncpg connect calls
         # at the ephemeral container.
-        previous = os.environ.get("FACE_REKON_DATABASE_URL")
-        os.environ["FACE_REKON_DATABASE_URL"] = dsn
+        previous = os.environ.get("OPEN_RECOGNITION_DATABASE_URL")
+        os.environ["OPEN_RECOGNITION_DATABASE_URL"] = dsn
         try:
             # Apply alembic head against the fresh database.
             from infrastructure.persistence.db import run_migrations
@@ -62,9 +62,9 @@ def postgres_dsn() -> Iterator[str]:
             yield dsn
         finally:
             if previous is None:
-                os.environ.pop("FACE_REKON_DATABASE_URL", None)
+                os.environ.pop("OPEN_RECOGNITION_DATABASE_URL", None)
             else:
-                os.environ["FACE_REKON_DATABASE_URL"] = previous
+                os.environ["OPEN_RECOGNITION_DATABASE_URL"] = previous
     finally:
         container.stop()
 

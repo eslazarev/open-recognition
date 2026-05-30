@@ -16,7 +16,7 @@ def _sha256_of(blob: bytes) -> str:
 
 @pytest.fixture
 def tmp_models(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
-    monkeypatch.setenv("FACE_REKON_MODELS_DIR", str(tmp_path))
+    monkeypatch.setenv("OPEN_RECOGNITION_MODELS_DIR", str(tmp_path))
     return tmp_path
 
 

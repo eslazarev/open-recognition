@@ -1,4 +1,4 @@
-"""LFW-driven stress test for the face-rekon stack.
+"""LFW-driven stress test for the open-recognition stack.
 
 Phases:
   1. Walk LFW images, embed up to N via the real YuNet+SFace pipeline.

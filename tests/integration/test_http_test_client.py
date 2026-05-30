@@ -27,7 +27,7 @@ def _amz(operation: str) -> dict[str, str]:
 @pytest.fixture(scope="session")
 def http_client(postgres_dsn: str) -> Iterator[TestClient]:
     # Importing inside the fixture ensures the app picks up the
-    # FACE_REKON_DATABASE_URL set by postgres_dsn (session-scoped).
+    # OPEN_RECOGNITION_DATABASE_URL set by postgres_dsn (session-scoped).
     from interface.http.app import app
 
     with TestClient(app) as client:

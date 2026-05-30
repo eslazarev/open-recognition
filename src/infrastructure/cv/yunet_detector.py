@@ -27,7 +27,7 @@ _LANDMARK_NAMES = ("eyeLeft", "eyeRight", "nose", "mouthLeft", "mouthRight")
 
 
 def _default_pool_size() -> int:
-    env = os.environ.get("FACE_REKON_CV_POOL_SIZE")
+    env = os.environ.get("OPEN_RECOGNITION_CV_POOL_SIZE")
     if env:
         return max(1, int(env))
     return max(1, min(4, os.cpu_count() or 1))

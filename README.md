@@ -488,15 +488,15 @@ Everything is environment variables. There's no config file.
 
 | Variable | Default | What it does |
 |---|---|---|
-| `FACE_REKON_DATABASE_URL` | `postgresql://face_rekon:face_rekon@localhost:5432/face_rekon` | Postgres DSN. asyncpg-style; alembic's env.py rewrites it to `postgresql+psycopg://` internally. |
-| `FACE_REKON_CV_POOL_SIZE` | `min(4, cpu_count())` | Number of cv2 detector/recognizer instances in each pool. Higher = more parallel inference, ~15 MB extra RAM per slot. |
-| `FACE_REKON_MODELS_DIR` | `./models` | Where ONNX files live. Auto-created. |
-| `FACE_REKON_ALEMBIC_INI` | `<project_root>/alembic.ini` | Override only if running alembic from a non-standard location. |
+| `OPEN_RECOGNITION_DATABASE_URL` | `postgresql://open_recognition:open_recognition@localhost:5432/open_recognition` | Postgres DSN. asyncpg-style; alembic's env.py rewrites it to `postgresql+psycopg://` internally. |
+| `OPEN_RECOGNITION_CV_POOL_SIZE` | `min(4, cpu_count())` | Number of cv2 detector/recognizer instances in each pool. Higher = more parallel inference, ~15 MB extra RAM per slot. |
+| `OPEN_RECOGNITION_MODELS_DIR` | `./models` | Where ONNX files live. Auto-created. |
+| `OPEN_RECOGNITION_ALEMBIC_INI` | `<project_root>/alembic.ini` | Override only if running alembic from a non-standard location. |
 
-The compose `app` service sets `FACE_REKON_DATABASE_URL` to reach the
+The compose `app` service sets `OPEN_RECOGNITION_DATABASE_URL` to reach the
 `postgres` service over the compose network; everything else uses the
 defaults above. To run against a managed Postgres, point
-`FACE_REKON_DATABASE_URL` at it (in the compose file, or in your shell when
+`OPEN_RECOGNITION_DATABASE_URL` at it (in the compose file, or in your shell when
 running the server from `uv`).
 
 ---

@@ -5,7 +5,7 @@ disk and compare against the expected SHA256. If a downloaded file
 fails verification we delete it and try once more; persistent
 mismatch raises so a poisoned upstream never silently propagates.
 
-Models land in `FACE_REKON_MODELS_DIR` (default `./models`). To rotate
+Models land in `OPEN_RECOGNITION_MODELS_DIR` (default `./models`). To rotate
 to a newer release, update both the URL and the SHA256 here in one
 commit.
 """
@@ -41,7 +41,7 @@ class ChecksumError(RuntimeError):
 
 
 def models_dir() -> Path:
-    p = Path(os.environ.get("FACE_REKON_MODELS_DIR", "models"))
+    p = Path(os.environ.get("OPEN_RECOGNITION_MODELS_DIR", "models"))
     p.mkdir(parents=True, exist_ok=True)
     return p
 

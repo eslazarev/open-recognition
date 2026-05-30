@@ -22,7 +22,7 @@ class Collection:
     created_at: datetime
 
     def arn(self) -> str:
-        return f"arn:face-rekon:rekognition:::collection/{self.collection_id}"
+        return f"arn:open-recognition:rekognition:::collection/{self.collection_id}"
 
 
 def validate_collection_id(value: str) -> str:
