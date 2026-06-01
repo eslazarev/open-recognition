@@ -32,6 +32,14 @@ class SFaceRecognizer:
             )
         self.pool_size = size
 
+    def align(self, image: NDArray[np.uint8], detected: DetectedFace) -> NDArray[np.uint8]:
+        """Return the 112x112 aligned BGR crop (reuses SFace's aligner)."""
+        rec = self._pool.get()
+        try:
+            return rec.alignCrop(image, detected.raw_row)
+        finally:
+            self._pool.put(rec)
+
     def embed(self, image: NDArray[np.uint8], detected: DetectedFace) -> Embedding:
         rec = self._pool.get()
         try:

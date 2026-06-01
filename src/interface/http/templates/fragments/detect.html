@@ -5,13 +5,51 @@
   {% for f in r.FaceDetails %}
     {% set b = f.BoundingBox %}
     <div class="box" style="left:{{ b.Left*100 }}%;top:{{ b.Top*100 }}%;width:{{ b.Width*100 }}%;height:{{ b.Height*100 }}%">
-      <span class="boxtag">{{ '%.1f'|format(f.Confidence) }}%</span>
+      <span class="boxtag">#{{ loop.index }} · {{ '%.1f'|format(f.Confidence) }}%</span>
     </div>
     {% for lm in f.Landmarks %}
       <span class="dot {{ lm.Type }}" style="left:{{ lm.X*100 }}%;top:{{ lm.Y*100 }}%"></span>
     {% endfor %}
   {% endfor %}
 </div>
+
+{% for f in r.FaceDetails %}
+<div class="attrs">
+  <div class="attr-head">Face #{{ loop.index }}</div>
+  <div class="attr-grid">
+    {% if f.Pose %}
+    <div class="attr-card">
+      <div class="attr-title">Pose</div>
+      <div class="attr-kv"><span>Roll</span><b>{{ '%.1f'|format(f.Pose.Roll) }}°</b></div>
+      <div class="attr-kv"><span>Yaw</span><b>{{ '%.1f'|format(f.Pose.Yaw) }}°</b></div>
+      <div class="attr-kv"><span>Pitch</span><b>{{ '%.1f'|format(f.Pose.Pitch) }}°</b></div>
+    </div>
+    {% endif %}
+    {% if f.Quality %}
+    <div class="attr-card">
+      <div class="attr-title">Quality</div>
+      <div class="attr-kv"><span>Brightness</span><b>{{ '%.0f'|format(f.Quality.Brightness) }}</b></div>
+      <div class="attr-kv"><span>Sharpness</span><b>{{ '%.0f'|format(f.Quality.Sharpness) }}</b></div>
+      {% if f.Smile %}
+      <div class="attr-kv"><span>Smile</span><b class="{{ 'good-text' if f.Smile.Value else '' }}">{{ '✓' if f.Smile.Value else '✗' }} {{ '%.0f'|format(f.Smile.Confidence) }}%</b></div>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% if f.Emotions %}
+    <div class="attr-card emotions">
+      <div class="attr-title">Emotions</div>
+      {% for e in f.Emotions %}
+      <div class="emo-row">
+        <span class="emo-label">{{ e.Type|lower }}</span>
+        <span class="emo-bar"><span class="emo-fill" style="width:{{ e.Confidence }}%"></span></span>
+        <span class="emo-pct">{{ '%.0f'|format(e.Confidence) }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
 {% else %}
 <p class="warn">No faces detected.</p>
 {% endif %}

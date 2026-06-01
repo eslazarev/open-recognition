@@ -48,10 +48,55 @@ class Landmark(AwsModel):
     y: float = Field(alias="Y")
 
 
+class PoseShape(AwsModel):
+    roll: float = Field(alias="Roll")
+    yaw: float = Field(alias="Yaw")
+    pitch: float = Field(alias="Pitch")
+
+
+class ImageQualityShape(AwsModel):
+    brightness: float
+    sharpness: float
+
+
+class EmotionShape(AwsModel):
+    type: str = Field(alias="Type")
+    confidence: float
+
+
+class BinaryAttrShape(AwsModel):
+    value: bool = Field(alias="Value")
+    confidence: float
+
+
+class AgeRangeShape(AwsModel):
+    low: int = Field(alias="Low")
+    high: int = Field(alias="High")
+
+
+class GenderShape(AwsModel):
+    value: str = Field(alias="Value")
+    confidence: float
+
+
 class FaceDetail(AwsModel):
     bounding_box: BoundingBox
     confidence: float
     landmarks: list[Landmark] = []
+    # populated when requested:
+    pose: PoseShape | None = None
+    quality: ImageQualityShape | None = None
+    emotions: list[EmotionShape] | None = None
+    smile: BinaryAttrShape | None = None
+    # schema-present for AWS shape parity, never populated (no permissive model):
+    age_range: AgeRangeShape | None = None
+    gender: GenderShape | None = None
+    eyeglasses: BinaryAttrShape | None = None
+    sunglasses: BinaryAttrShape | None = None
+    beard: BinaryAttrShape | None = None
+    mustache: BinaryAttrShape | None = None
+    eyes_open: BinaryAttrShape | None = None
+    mouth_open: BinaryAttrShape | None = None
 
 
 class FaceShape(AwsModel):

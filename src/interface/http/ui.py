@@ -82,7 +82,7 @@ async def ui_detect(request: Request, image: UploadFile = File(...)) -> HTMLResp
     b64, uri = await _b64(image)
     return await _render(
         request, detect_faces.handle,
-        {"Image": {"Bytes": b64}},
+        {"Image": {"Bytes": b64}, "Attributes": ["ALL"]},
         "fragments/detect.html", {"img": uri},
     )
 

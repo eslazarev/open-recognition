@@ -19,6 +19,7 @@ from pathlib import Path
 
 YUNET_FILENAME = "face_detection_yunet_2023mar.onnx"
 SFACE_FILENAME = "face_recognition_sface_2021dec.onnx"
+FER_FILENAME = "facial_expression_recognition_mobilefacenet_2022july.onnx"
 
 YUNET_URL = (
     "https://github.com/opencv/opencv_zoo/raw/main/models/"
@@ -28,12 +29,18 @@ SFACE_URL = (
     "https://github.com/opencv/opencv_zoo/raw/main/models/"
     "face_recognition_sface/" + SFACE_FILENAME
 )
+FER_URL = (
+    "https://github.com/opencv/opencv_zoo/raw/main/models/"
+    "facial_expression_recognition/" + FER_FILENAME
+)
 
 # SHA256 of the artifacts we've validated against (Mar 2026 snapshot of
 # opencv_zoo). Rotating to a different model version requires updating
 # both the URL above and the hash here in one commit.
 YUNET_SHA256 = "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4"
 SFACE_SHA256 = "0ba9fbfa01b5270c96627c4ef784da859931e02f04419c829e83484087c34e79"
+# opencv_zoo facial_expression_recognition (Apache 2.0), verified 2026-06-01.
+FER_SHA256 = "4f61307602fc089ce20488a31d4e4614e3c9753a7d6c41578c854858b183e1a9"
 
 
 class ChecksumError(RuntimeError):
@@ -88,3 +95,7 @@ def yunet_path() -> Path:
 
 def sface_path() -> Path:
     return _ensure(SFACE_FILENAME, SFACE_URL, SFACE_SHA256)
+
+
+def fer_path() -> Path:
+    return _ensure(FER_FILENAME, FER_URL, FER_SHA256)

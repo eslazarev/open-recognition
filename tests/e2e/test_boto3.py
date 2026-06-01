@@ -185,3 +185,12 @@ def test_invalid_quality_filter_value_is_invalid_parameter(
             "InvalidParameterException",
             "ValidationException",
         )
+
+
+def test_detect_faces_all_attributes(client, image_bytes):
+    r = client.detect_faces(Image={"Bytes": image_bytes}, Attributes=["ALL"])
+    fd = r["FaceDetails"][0]
+    assert "Pose" in fd and {"Roll", "Yaw", "Pitch"} <= set(fd["Pose"])
+    assert "Quality" in fd and {"Brightness", "Sharpness"} <= set(fd["Quality"])
+    assert "Emotions" in fd and fd["Emotions"][0]["Type"]
+    assert "Smile" in fd

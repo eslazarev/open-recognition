@@ -79,3 +79,10 @@ def test_existing_corrupted_file_is_replaced_then_verified(
         "rotate.onnx", "https://example.invalid/x", _sha256_of(good_payload)
     )
     assert out.read_bytes() == good_payload
+
+
+def test_fer_constants_present():
+    from infrastructure.cv import model_loader as ml
+    assert ml.FER_FILENAME.endswith(".onnx")
+    assert len(ml.FER_SHA256) == 64
+    assert "facial_expression_recognition" in ml.FER_URL

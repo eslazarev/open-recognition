@@ -118,7 +118,7 @@ are stored.
 | **Search latency p95** | 4 ms (5 000 faces, local PG) | tens of ms over network |
 | **Cost per million faces** | ~$0 (electricity) + 2.5 GB disk | $1 per 1 000 IndexFaces (~$1 000) + storage |
 | **Where your photos go** | your Postgres | AWS |
-| **What it can't do** | quality attributes (age, emotion, pose angles), celebrity, moderation, video | all of those |
+| **What it can't do** | age/gender, eyeglasses/beard and similar attributes, celebrity, moderation, video (it *does* do pose, emotions, smile, quality) | all of those |
 
 If you only use the Faces API and want to stop paying per image, this is a
 straight swap. If you need DetectLabels, age estimation, or video — keep using
@@ -359,9 +359,12 @@ wire shape exactly — request fields, response keys, error codes.
 | `DeleteFaces` | yes | Deletes by `FaceIds[]`, returns the ones actually removed |
 | `SearchFacesByImage` | yes | Detect+embed query → HNSW cosine top-k filtered by threshold |
 
-Two parameters that AWS supports and we accept-but-ignore: `DetectionAttributes`
-(we don't compute age/gender/emotion) and the `S3Object` image source (we only
-read `Image.Bytes` and return `InvalidS3ObjectException` for `S3Object`).
+`DetectFaces` honours the `Attributes` parameter — `DEFAULT` returns
+`BoundingBox`/`Confidence`/`Landmarks`/`Pose`/`Quality`, `ALL` adds `Emotions`
+and `Smile`. `IndexFaces` still accepts-but-ignores `DetectionAttributes` (its
+`FaceDetail` carries only box/confidence/landmarks). The `S3Object` image
+source is also ignored — we read only `Image.Bytes` and return
+`InvalidS3ObjectException` for `S3Object`.
 
 ---
 
@@ -590,7 +593,7 @@ isn't measured yet.
 Plenty of AWS Rekognition is intentionally out of scope. Don't try to use
 us as a full replacement.
 
-- **Face attributes**: no `AgeRange`, `Gender`, `Emotions`, `Eyeglasses`, `Beard`, `Pose`, `Quality.Brightness/Sharpness`. We return `BoundingBox`, `Confidence`, `Landmarks`. `Attributes=["ALL"]` is silently downgraded to default.
+- **Face attributes**: `DetectFaces` now returns **Pose** (Roll/Yaw/Pitch via solvePnP — approximate, not numerically identical to AWS), **Quality** (Brightness/Sharpness on a heuristic 0–100 scale), **Emotions**, and **Smile**. The `Attributes` parameter is honoured: `DEFAULT` returns `BoundingBox`, `Confidence`, `Landmarks`, `Pose`, and `Quality`; `ALL` additionally includes `Emotions` and `Smile`. It is no longer silently downgraded. Still **not** populated: `AgeRange`, `Gender`, `Eyeglasses`, `Sunglasses`, `Beard`, `Mustache`, `EyesOpen`, `MouthOpen` — no permissively-licensed free model exists for these. Age/Gender in particular were dropped because the only available candidate (InsightFace genderage) is non-commercial/research-only, which clashes with this project's permissive-model stance. The JSON keys exist in the response shape for AWS parity but are omitted from actual responses.
 - **DetectLabels, DetectText, DetectModerationLabels, RecognizeCelebrities** — these aren't faces, different models.
 - **Video** — `StartFaceDetection`, `StartFaceSearch`, etc. Use the image API on extracted frames.
 - **S3Object image source** — only `Image.Bytes` is supported. `S3Object` returns `InvalidS3ObjectException`.
@@ -700,9 +703,11 @@ are redistributed under permissive licences with attribution preserved:
 |---|---|---|---|
 | **YuNet** | `face_detection_yunet_2023mar.onnx` | MIT | Wu et al., [opencv_zoo/face_detection_yunet] |
 | **SFace** | `face_recognition_sface_2021dec.onnx` | Apache 2.0 | Zhong et al. (NJU), [opencv_zoo/face_recognition_sface] |
+| **FER** | `facial_expression_recognition_mobilefacenet_2022july.onnx` | Apache 2.0 | [opencv_zoo/facial_expression_recognition] |
 
 [opencv_zoo/face_detection_yunet]: https://github.com/opencv/opencv_zoo/tree/main/models/face_detection_yunet
 [opencv_zoo/face_recognition_sface]: https://github.com/opencv/opencv_zoo/tree/main/models/face_recognition_sface
+[opencv_zoo/facial_expression_recognition]: https://github.com/opencv/opencv_zoo/tree/main/models/facial_expression_recognition
 
 If you re-publish this repo or a fork, keep the model attribution in
 this section. If you'd rather not vendor the binaries, delete `models/`

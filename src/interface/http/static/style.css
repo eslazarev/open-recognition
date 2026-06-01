@@ -171,6 +171,23 @@ button.danger:hover { background: var(--red-dim); box-shadow: none; transform: n
 .dot.nose { background: var(--amber); color: var(--amber); }
 .dot.mouthLeft, .dot.mouthRight { background: var(--pink); color: var(--pink); }
 
+/* ---------- detect attributes panel ---------- */
+.attrs { margin-top: 16px; }
+.attr-head { font: 600 11px var(--mono); letter-spacing: .12em; text-transform: uppercase;
+  color: var(--faint); margin-bottom: 8px; }
+.attr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.attr-card { background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.attr-title { font: 600 11px var(--mono); letter-spacing: .1em; text-transform: uppercase;
+  color: var(--green); margin-bottom: 8px; }
+.attr-kv { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; }
+.attr-kv span { color: var(--mute); font-size: 13px; }
+.attr-kv b { font-family: var(--mono); font-size: 13px; }
+.emo-row { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
+.emo-label { width: 70px; color: var(--mute); font-size: 12px; text-transform: capitalize; }
+.emo-bar { flex: 1; height: 7px; background: rgba(255,255,255,.06); border-radius: 999px; overflow: hidden; }
+.emo-fill { display: block; height: 100%; background: var(--green); border-radius: 999px; }
+.emo-pct { width: 26px; text-align: right; font: 600 11px var(--mono); color: var(--mute); }
+
 /* ---------- compare ---------- */
 .pair { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
 .pair figure { margin: 0; }

@@ -16,6 +16,7 @@ from numpy.typing import NDArray
 from domain.collection import Collection
 from domain.embedding import Embedding
 from domain.face import Face
+from domain.face_attributes import FaceAttributes
 from domain.face_record import FaceRecord
 
 
@@ -34,6 +35,16 @@ class FaceDetector(Protocol):
 
 class FaceRecognizer(Protocol):
     def embed(self, image: NDArray[np.uint8], detected: DetectedFace) -> Embedding:
+        ...
+
+
+class FaceAnalyzer(Protocol):
+    def analyze(
+        self,
+        image: NDArray[np.uint8],
+        detected: DetectedFace,
+        requested: set[str],
+    ) -> FaceAttributes:
         ...
 
 
