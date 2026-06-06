@@ -593,7 +593,7 @@ isn't measured yet.
 Plenty of AWS Rekognition is intentionally out of scope. Don't try to use
 us as a full replacement.
 
-- **Face attributes**: `DetectFaces` now returns **Pose** (Roll/Yaw/Pitch via solvePnP — approximate, not numerically identical to AWS), **Quality** (Brightness/Sharpness on a heuristic 0–100 scale), **Emotions**, and **Smile**. The `Attributes` parameter is honoured: `DEFAULT` returns `BoundingBox`, `Confidence`, `Landmarks`, `Pose`, and `Quality`; `ALL` additionally includes `Emotions` and `Smile`. It is no longer silently downgraded. Still **not** populated: `AgeRange`, `Gender`, `Eyeglasses`, `Sunglasses`, `Beard`, `Mustache`, `EyesOpen`, `MouthOpen` — no permissively-licensed free model exists for these. Age/Gender in particular were dropped because the only available candidate (InsightFace genderage) is non-commercial/research-only, which clashes with this project's permissive-model stance. The JSON keys exist in the response shape for AWS parity but are omitted from actual responses.
+- **Face attributes**: `DetectFaces` returns **Pose** (Roll/Yaw/Pitch via solvePnP — approximate), **Quality** (Brightness/Sharpness, heuristic 0–100), **Emotions**, **Smile**, the **AWS-named `Landmarks`** (~30 types via MediaPipe Face Mesh — validated against real AWS to within ~0.5% for eyes/pupils/mouth), and **EyesOpen**/**MouthOpen** (eye/mouth aspect ratio). The `Attributes` parameter is honoured: `DEFAULT` → `BoundingBox`, `Confidence`, `Landmarks`, `Pose`, `Quality`; `ALL` adds `Emotions`, `Smile`, `EyesOpen`, `MouthOpen`. The face mesh runs via **`onnxruntime`** (a dependency) once per detected face; if the model is absent, `Landmarks` falls back to YuNet's 5 points. Still **not** populated: `AgeRange`, `Gender`, `Eyeglasses`, `Sunglasses`, `Beard`, `Mustache` — no permissively-licensed free model. Age/Gender were dropped because the only candidate (InsightFace genderage) is non-commercial/research-only, clashing with this project's permissive-model stance. Those keys exist in the response shape for AWS parity but are omitted from responses.
 - **DetectLabels, DetectText, DetectModerationLabels, RecognizeCelebrities** — these aren't faces, different models.
 - **Video** — `StartFaceDetection`, `StartFaceSearch`, etc. Use the image API on extracted frames.
 - **S3Object image source** — only `Image.Bytes` is supported. `S3Object` returns `InvalidS3ObjectException`.
@@ -704,10 +704,12 @@ are redistributed under permissive licences with attribution preserved:
 | **YuNet** | `face_detection_yunet_2023mar.onnx` | MIT | Wu et al., [opencv_zoo/face_detection_yunet] |
 | **SFace** | `face_recognition_sface_2021dec.onnx` | Apache 2.0 | Zhong et al. (NJU), [opencv_zoo/face_recognition_sface] |
 | **FER** | `facial_expression_recognition_mobilefacenet_2022july.onnx` | Apache 2.0 | [opencv_zoo/facial_expression_recognition] |
+| **Face Mesh** | `face_mesh_478.onnx` | MIT (re-host) | MediaPipe Face Mesh (Apache 2.0), via [astaileyyoung/FaceMeshONNX] |
 
 [opencv_zoo/face_detection_yunet]: https://github.com/opencv/opencv_zoo/tree/main/models/face_detection_yunet
 [opencv_zoo/face_recognition_sface]: https://github.com/opencv/opencv_zoo/tree/main/models/face_recognition_sface
 [opencv_zoo/facial_expression_recognition]: https://github.com/opencv/opencv_zoo/tree/main/models/facial_expression_recognition
+[astaileyyoung/FaceMeshONNX]: https://huggingface.co/astaileyyoung/FaceMeshONNX
 
 If you re-publish this repo or a fork, keep the model attribution in
 this section. If you'd rather not vendor the binaries, delete `models/`

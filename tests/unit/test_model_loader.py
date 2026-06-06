@@ -86,3 +86,10 @@ def test_fer_constants_present():
     assert ml.FER_FILENAME.endswith(".onnx")
     assert len(ml.FER_SHA256) == 64
     assert "facial_expression_recognition" in ml.FER_URL
+
+
+def test_facemesh_constants_present():
+    from infrastructure.cv import model_loader as ml
+    assert ml.FACEMESH_FILENAME.endswith(".onnx")
+    assert len(ml.FACEMESH_SHA256) == 64
+    assert ml.FACEMESH_URL.startswith("https://")

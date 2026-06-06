@@ -33,6 +33,12 @@
       {% if f.Smile %}
       <div class="attr-kv"><span>Smile</span><b class="{{ 'good-text' if f.Smile.Value else '' }}">{{ '✓' if f.Smile.Value else '✗' }} {{ '%.0f'|format(f.Smile.Confidence) }}%</b></div>
       {% endif %}
+      {% if f.EyesOpen %}
+      <div class="attr-kv"><span>Eyes open</span><b class="{{ 'good-text' if f.EyesOpen.Value else '' }}">{{ '✓' if f.EyesOpen.Value else '✗' }} {{ '%.0f'|format(f.EyesOpen.Confidence) }}%</b></div>
+      {% endif %}
+      {% if f.MouthOpen %}
+      <div class="attr-kv"><span>Mouth open</span><b class="{{ 'good-text' if f.MouthOpen.Value else '' }}">{{ '✓' if f.MouthOpen.Value else '✗' }} {{ '%.0f'|format(f.MouthOpen.Confidence) }}%</b></div>
+      {% endif %}
     </div>
     {% endif %}
     {% if f.Emotions %}

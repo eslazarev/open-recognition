@@ -11,6 +11,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from infrastructure.cv.composite_analyzer import CompositeFaceAnalyzer
+from infrastructure.cv.facemesh_recognizer import FaceMeshRecognizer
 from infrastructure.cv.fer_recognizer import FERRecognizer
 from infrastructure.cv.sface_recognizer import SFaceRecognizer
 from infrastructure.cv.yunet_detector import YuNetDetector
@@ -38,7 +39,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.collection_repo = PgCollectionRepository(pool=pool)
     app.state.face_repo = PgFaceRepository(pool=pool)
     fer = await asyncio.to_thread(FERRecognizer)
-    app.state.analyzer = CompositeFaceAnalyzer(fer=fer, aligner=recognizer)
+    facemesh = await asyncio.to_thread(FaceMeshRecognizer)
+    app.state.analyzer = CompositeFaceAnalyzer(fer=fer, aligner=recognizer, mesh=facemesh)
     try:
         yield
     finally:

@@ -36,3 +36,6 @@ class FaceAttributes:
     quality: ImageQuality | None = None
     emotions: tuple[Emotion, ...] = field(default_factory=tuple)
     smile: BinaryAttr | None = None
+    landmarks: tuple = field(default_factory=tuple)  # tuple[domain.face.Landmark, ...]
+    eyes_open: BinaryAttr | None = None
+    mouth_open: BinaryAttr | None = None

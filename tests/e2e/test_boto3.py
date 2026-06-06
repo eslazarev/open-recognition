@@ -194,3 +194,13 @@ def test_detect_faces_all_attributes(client, image_bytes):
     assert "Quality" in fd and {"Brightness", "Sharpness"} <= set(fd["Quality"])
     assert "Emotions" in fd and fd["Emotions"][0]["Type"]
     assert "Smile" in fd
+
+
+def test_detect_faces_named_landmarks_and_eyes_mouth(client, image_bytes):
+    r = client.detect_faces(Image={"Bytes": image_bytes}, Attributes=["ALL"])
+    fd = r["FaceDetails"][0]
+    types = {lm["Type"] for lm in fd["Landmarks"]}
+    assert {"leftPupil", "rightPupil", "chinBottom", "nose"} <= types
+    assert len(fd["Landmarks"]) > 5
+    assert "EyesOpen" in fd and "Value" in fd["EyesOpen"]
+    assert "MouthOpen" in fd and "Value" in fd["MouthOpen"]

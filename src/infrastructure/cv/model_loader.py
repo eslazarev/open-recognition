@@ -42,6 +42,13 @@ SFACE_SHA256 = "0ba9fbfa01b5270c96627c4ef784da859931e02f04419c829e83484087c34e79
 # opencv_zoo facial_expression_recognition (Apache 2.0), verified 2026-06-01.
 FER_SHA256 = "4f61307602fc089ce20488a31d4e4614e3c9753a7d6c41578c854858b183e1a9"
 
+FACEMESH_FILENAME = "face_mesh_478.onnx"
+
+FACEMESH_URL = "https://huggingface.co/astaileyyoung/FaceMeshONNX/resolve/main/mesh.onnx"
+
+# MediaPipe Face Mesh ONNX re-host (MIT); upstream Apache-2.0. Verified 2026-06-01.
+FACEMESH_SHA256 = "c334c26b128dfc709da0f353c6157ac340b785f5f25cdab5dbea12bbea243172"
+
 
 class ChecksumError(RuntimeError):
     """Raised when a model file's hash does not match the pinned value."""
@@ -99,3 +106,7 @@ def sface_path() -> Path:
 
 def fer_path() -> Path:
     return _ensure(FER_FILENAME, FER_URL, FER_SHA256)
+
+
+def facemesh_path() -> Path:
+    return _ensure(FACEMESH_FILENAME, FACEMESH_URL, FACEMESH_SHA256)
