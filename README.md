@@ -1,10 +1,9 @@
-# open-recognition
+# open-recognition - a free, self-hosted, boto3-compatible drop-in for the AWS Rekognition Faces API.
 
-**A self-hosted, boto3-compatible drop-in for the AWS Rekognition Faces API.**
-
-You point `boto3.client("rekognition")` at this server with one argument and
-keep your existing code. No vendor lock-in, no per-image billing, no images
-leaving your network.
+An open-source, self-hosted alternative to AWS Rekognition: you point
+`boto3.client("rekognition")` at this server with one argument and keep your
+existing code. No vendor lock-in, no per-image billing, no images leaving your
+network — and it doubles as a local Rekognition mock for tests and CI.
 
 <p align="center">
   <img src="docs/img/recognition.png" alt="Each person enrolled with one photo and recognised from a different, unseen photo — every similarity score is live output from the server's own API." width="640">
@@ -120,9 +119,9 @@ are stored.
 | **Where your photos go** | your Postgres | AWS |
 | **What it can't do** | age/gender, eyeglasses/beard and similar attributes, celebrity, moderation, video (it *does* do pose, emotions, smile, quality) | all of those |
 
-If you only use the Faces API and want to stop paying per image, this is a
-straight swap. If you need DetectLabels, age estimation, or video — keep using
-real Rekognition.
+If you only use the Faces API and want a self-hosted AWS Rekognition
+alternative that stops the per-image billing, this is a straight swap. If you
+need DetectLabels, age estimation, or video — keep using real Rekognition.
 
 ---
 
