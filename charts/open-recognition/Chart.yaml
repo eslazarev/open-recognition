@@ -1,0 +1,47 @@
+apiVersion: v2
+name: open-recognition
+description: Self-hosted, boto3-compatible AWS Rekognition Faces API. Detect, index, compare and search faces (YuNet detection + SFace embeddings) backed by PostgreSQL/pgvector, with a built-in HTMX playground UI. Drop-in for the AWS Rekognition JSON-1.1 protocol.
+type: application
+version: 0.1.0
+appVersion: "latest"
+home: https://github.com/eslazarev/open-recognition
+icon: https://raw.githubusercontent.com/eslazarev/open-recognition/main/.github/images/logo.png
+sources:
+  - https://github.com/eslazarev/open-recognition
+keywords:
+  - face-recognition
+  - face-detection
+  - rekognition
+  - aws-rekognition
+  - computer-vision
+  - pgvector
+  - opencv
+  - onnx
+  - yunet
+  - sface
+  - boto3
+  - self-hosted
+maintainers:
+  - name: Evgenii Lazarev
+    url: https://github.com/eslazarev
+annotations:
+  artifacthub.io/category: machine-learning
+  artifacthub.io/license: MIT
+  artifacthub.io/links: |
+    - name: GitHub repository
+      url: https://github.com/eslazarev/open-recognition
+    - name: Docker Hub image
+      url: https://hub.docker.com/r/eslazarev/open-recognition
+    - name: Issue tracker
+      url: https://github.com/eslazarev/open-recognition/issues
+  artifacthub.io/maintainers: |
+    - name: Evgenii Lazarev
+      email: elazarev@gmail.com
+  artifacthub.io/changes: |
+    - kind: added
+      description: Initial Helm chart release with Deployment, Service, Ingress, bundled pgvector StatefulSet and external-database support
+  artifacthub.io/containsSecurityUpdates: "false"
+  artifacthub.io/prerelease: "false"
+  artifacthub.io/images: |
+    - name: open-recognition
+      image: docker.io/eslazarev/open-recognition:latest

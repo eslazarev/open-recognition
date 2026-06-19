@@ -1,0 +1,158 @@
+name: Release Helm chart
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'charts/**'
+      - '.github/workflows/chart-release.yml'
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Version bump kind'
+        required: false
+        default: 'patch'
+        type: choice
+        options: [patch, minor, major, none]
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq \
+            https://github.com/mikefarah/yq/releases/download/v4.44.3/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      - name: Bump chart version if unchanged
+        id: bump
+        env:
+          BUMP_KIND: ${{ github.event.inputs.bump || 'patch' }}
+        run: |
+          set -euo pipefail
+          chart_dir="charts/open-recognition"
+          chart_file="$chart_dir/Chart.yaml"
+          name=$(yq '.name' "$chart_file")
+          cur=$(yq '.version' "$chart_file")
+          last_tag=$(git tag --list "${name}-*" --sort=-v:refname | head -n1 || true)
+          last_ver="${last_tag#${name}-}"
+          echo "current_version=$cur" >> "$GITHUB_OUTPUT"
+          echo "last_released_version=${last_ver:-none}" >> "$GITHUB_OUTPUT"
+          if [ "${BUMP_KIND}" = "none" ]; then
+            echo "Bump skipped via workflow_dispatch input."
+            echo "bumped=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ -n "$last_ver" ] && [ "$cur" != "$last_ver" ]; then
+            echo "Chart version already bumped manually: $last_ver -> $cur. Skipping auto-bump."
+            echo "bumped=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          IFS=. read -r major minor patch <<< "$cur"
+          case "$BUMP_KIND" in
+            major) new="$((major + 1)).0.0" ;;
+            minor) new="${major}.$((minor + 1)).0" ;;
+            patch) new="${major}.${minor}.$((patch + 1))" ;;
+            *) echo "Unknown BUMP_KIND=$BUMP_KIND"; exit 1 ;;
+          esac
+          echo "Bumping $name from $cur to $new ($BUMP_KIND)"
+          yq -i ".version = \"$new\"" "$chart_file"
+          git add "$chart_file"
+          git commit -m "chore(chart): bump $name to $new [skip ci]"
+          git push origin HEAD:${GITHUB_REF#refs/heads/}
+          echo "new_version=$new" >> "$GITHUB_OUTPUT"
+          echo "bumped=true" >> "$GITHUB_OUTPUT"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.16.2
+
+      - name: Lint chart
+        run: helm lint charts/open-recognition
+
+      - name: Bootstrap gh-pages branch if missing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
+            echo "gh-pages already exists; skipping bootstrap."
+            exit 0
+          fi
+          echo "Creating orphan gh-pages branch..."
+          tmp=$(mktemp -d)
+          git worktree add --orphan -B gh-pages "$tmp"
+          (
+            cd "$tmp"
+            : > .nojekyll
+            cat > index.html <<'HTML'
+          <!doctype html><meta charset="utf-8">
+          <title>Helm charts</title>
+          <h1>Helm charts</h1>
+          <p>This branch hosts a Helm chart repository. See <code>index.yaml</code>.</p>
+          HTML
+            git add .nojekyll index.html
+            git -c user.name="github-actions[bot]" \
+                -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+                commit -m "Initialize gh-pages"
+            git push origin gh-pages
+          )
+          git worktree remove --force "$tmp"
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.7.0
+        with:
+          charts_dir: charts
+          mark_as_latest: "true"
+          pages_branch: gh-pages
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish artifacthub-repo.yml to gh-pages root
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          src="charts/artifacthub-repo.yml"
+          if [ ! -f "$src" ]; then
+            echo "$src not found; skipping ArtifactHub repo metadata publish."
+            exit 0
+          fi
+          # chart-releaser may have pushed to gh-pages from its own worktree just
+          # before us, leaving the local ref stale. Re-fetch and align with the
+          # latest origin/gh-pages before committing on top.
+          git fetch origin gh-pages
+          tmp=$(mktemp -d)
+          git worktree add "$tmp" gh-pages
+          (
+            cd "$tmp"
+            git reset --hard origin/gh-pages
+            cp "$GITHUB_WORKSPACE/$src" artifacthub-repo.yml
+            if git diff --quiet -- artifacthub-repo.yml && git ls-files --error-unmatch artifacthub-repo.yml >/dev/null 2>&1; then
+              echo "artifacthub-repo.yml unchanged; skipping commit."
+              exit 0
+            fi
+            git add artifacthub-repo.yml
+            git -c user.name="github-actions[bot]" \
+                -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+                commit -m "chore: publish artifacthub-repo.yml"
+            git push origin gh-pages
+          )
+          git worktree remove --force "$tmp"

@@ -1,0 +1,30 @@
+{{ include "open-recognition.fullname" . }} installed.
+
+Image:    {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+Database: {{ if .Values.postgresql.enabled }}bundled pgvector ({{ include "open-recognition.postgresqlFullname" . }}){{ else if .Values.externalDatabase.existingSecret }}external (Secret {{ .Values.externalDatabase.existingSecret }}){{ else }}external (url from values){{ end }}
+
+Watch the rollout (startup runs DB migrations + loads the ONNX models):
+  kubectl rollout status deployment/{{ include "open-recognition.fullname" . }} -n {{ .Release.Namespace }}
+
+{{- if .Values.ingress.enabled }}
+
+Reachable via Ingress:
+{{- range .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ .host }}{{ (first .paths).path }}
+{{- end }}
+{{- else if eq .Values.service.type "ClusterIP" }}
+
+Port-forward to reach the API + playground UI locally:
+  kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "open-recognition.fullname" . }} 8080:{{ .Values.service.port }}
+
+Then open:
+  http://localhost:8080/ui      # HTMX Faces Playground
+  http://localhost:8080/docs    # OpenAPI docs
+
+Point a boto3 Rekognition client at it:
+  boto3.client("rekognition", endpoint_url="http://localhost:8080",
+               region_name="us-east-1",
+               aws_access_key_id="x", aws_secret_access_key="x")
+{{- end }}
+
+Repository: https://github.com/eslazarev/open-recognition

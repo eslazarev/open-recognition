@@ -30,6 +30,10 @@ dev = [
     "mypy>=1.13",
     "testcontainers[postgres]>=4.8",
 ]
+docs = [
+    "mkdocs-material>=9.5",
+    "mkdocs-swagger-ui-tag>=0.6",
+]
 
 [build-system]
 requires = ["hatchling"]

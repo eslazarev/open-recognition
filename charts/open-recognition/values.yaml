@@ -1,0 +1,135 @@
+image:
+  repository: eslazarev/open-recognition
+  tag: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+# The app image's default CMD wraps uvicorn in `uv run`, which wants a writable
+# uv cache. We invoke the synced venv binary directly so the container can run
+# with a read-only root filesystem. Override if your image layout differs.
+command:
+  - /app/.venv/bin/uvicorn
+  - interface.http.app:app
+  - --host
+  - 0.0.0.0
+  - --port
+  - "8080"
+
+# Container port the app listens on (matches `command` above and the Dockerfile EXPOSE).
+containerPort: 8080
+
+extraEnv: []
+extraEnvFrom: []
+
+service:
+  type: ClusterIP
+  port: 80
+  # targetPort defaults to containerPort; override only if they differ.
+  targetPort: ""
+  annotations: {}
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: open-recognition.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# Bundled PostgreSQL with the pgvector extension. The app runs `CREATE EXTENSION
+# IF NOT EXISTS vector` in its startup migration, so the image MUST ship pgvector
+# (pgvector/pgvector:pg16 does). Disable to use an external managed database.
+postgresql:
+  enabled: true
+  image:
+    repository: pgvector/pgvector
+    tag: pg16
+    pullPolicy: IfNotPresent
+  auth:
+    username: open_recognition
+    password: open_recognition
+    database: open_recognition
+  service:
+    port: 5432
+  persistence:
+    enabled: true
+    storageClass: ""
+    accessModes:
+      - ReadWriteOnce
+    size: 8Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+
+# External database — used only when postgresql.enabled=false.
+# Provide either `url` (rendered into the app Secret) or `existingSecret`
+# (a pre-created Secret already containing the DSN). The DSN must point at a
+# Postgres instance with the pgvector extension available.
+externalDatabase:
+  url: ""
+  existingSecret: ""
+  existingSecretKey: OPEN_RECOGNITION_DATABASE_URL
+
+# Probe path served without touching the database (FastAPI serves the spec here).
+probePath: /openapi.json
+
+startupProbe:
+  enabled: true
+  periodSeconds: 5
+  failureThreshold: 60
+livenessProbe:
+  enabled: true
+  periodSeconds: 20
+  failureThreshold: 3
+readinessProbe:
+  enabled: true
+  periodSeconds: 10
+  failureThreshold: 3
+
+# Face models are baked into the image; startup loads four ONNX networks plus
+# the OpenCV/onnxruntime stack, so give the pod headroom.
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65532
+  fsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+podAnnotations: {}
+podLabels: {}
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}

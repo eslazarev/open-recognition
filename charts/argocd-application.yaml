@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: open-recognition
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/eslazarev/open-recognition.git
+    targetRevision: HEAD
+    path: charts/open-recognition
+    helm:
+      releaseName: open-recognition
+      values: |
+        image:
+          pullPolicy: IfNotPresent
+        postgresql:
+          enabled: true
+          auth:
+            password: "change-me-in-real-deployments"
+          persistence:
+            size: 8Gi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: open-recognition
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    automated:
+      prune: true
+      selfHeal: true
