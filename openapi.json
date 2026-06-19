@@ -1,0 +1,1365 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "open-recognition",
+    "version": "0.1.0",
+    "description": "Self-hosted, **boto3-compatible** drop-in for the AWS Rekognition Faces API.\n\nThe native protocol is **AWS JSON-1.1**: every call is `POST /` with an\n`X-Amz-Target: RekognitionService.<Action>` header and a JSON body. Point\n`boto3.client(\"rekognition\", endpoint_url=...)` at the server and your\nexisting code works unchanged.\n\nFor exploration this document also exposes each action as `POST /<Action>`\n(e.g. `POST /DetectFaces`), which the server accepts as an alias \u2014 that is\nwhat the **Try it out** button uses. Both forms hit the same handlers.\n\nErrors follow AWS: HTTP 4xx/5xx with `{\"__type\": \"...\", \"Message\": \"...\"}`\nand an `x-amzn-errortype` header.\n",
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "tags": [
+    {
+      "name": "Faces",
+      "description": "AWS Rekognition Faces API operations."
+    }
+  ],
+  "paths": {
+    "/DetectFaces": {
+      "post": {
+        "operationId": "DetectFaces",
+        "tags": [
+          "Faces"
+        ],
+        "summary": "Detect faces in an image \u2014 bounding boxes, confidence, and landmarks.",
+        "description": "AWS JSON-1.1 action **DetectFaces**. Canonical call: `POST /` with header `X-Amz-Target: RekognitionService.DetectFaces`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-amz-json-1.1": {
+              "schema": {
+                "$ref": "#/components/schemas/DetectFacesRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DetectFacesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetectFacesResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetectFacesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "AWS error (InvalidParameterException, ResourceNotFoundException, \u2026)",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/CompareFaces": {
+      "post": {
+        "operationId": "CompareFaces",
+        "tags": [
+          "Faces"
+        ],
+        "summary": "Compare the largest face in the source image against the target image.",
+        "description": "AWS JSON-1.1 action **CompareFaces**. Canonical call: `POST /` with header `X-Amz-Target: RekognitionService.CompareFaces`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-amz-json-1.1": {
+              "schema": {
+                "$ref": "#/components/schemas/CompareFacesRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompareFacesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompareFacesResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompareFacesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "AWS error (InvalidParameterException, ResourceNotFoundException, \u2026)",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/CreateCollection": {
+      "post": {
+        "operationId": "CreateCollection",
+        "tags": [
+          "Faces"
+        ],
+        "summary": "Create a face collection.",
+        "description": "AWS JSON-1.1 action **CreateCollection**. Canonical call: `POST /` with header `X-Amz-Target: RekognitionService.CreateCollection`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-amz-json-1.1": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCollectionRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCollectionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCollectionResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCollectionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "AWS error (InvalidParameterException, ResourceNotFoundException, \u2026)",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/DeleteCollection": {
+      "post": {
+        "operationId": "DeleteCollection",
+        "tags": [
+          "Faces"
+        ],
+        "summary": "Delete a collection and cascade to its faces.",
+        "description": "AWS JSON-1.1 action **DeleteCollection**. Canonical call: `POST /` with header `X-Amz-Target: RekognitionService.DeleteCollection`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-amz-json-1.1": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteCollectionRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteCollectionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteCollectionResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteCollectionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "AWS error (InvalidParameterException, ResourceNotFoundException, \u2026)",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/DescribeCollection": {
+      "post": {
+        "operationId": "DescribeCollection",
+        "tags": [
+          "Faces"
+        ],
+        "summary": "Return face count, model version, and creation time for a collection.",
+        "description": "AWS JSON-1.1 action **DescribeCollection**. Canonical call: `POST /` with header `X-Amz-Target: RekognitionService.DescribeCollection`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-amz-json-1.1": {
+              "schema": {
+                "$ref": "#/components/schemas/DescribeCollectionRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DescribeCollectionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/DescribeCollectionResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DescribeCollectionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "AWS error (InvalidParameterException, ResourceNotFoundException, \u2026)",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ListCollections": {
+      "post": {
+        "operationId": "ListCollections",
+        "tags": [
+          "Faces"
+        ],
+        "summary": "List collection IDs, paginated via NextToken.",
+        "description": "AWS JSON-1.1 action **ListCollections**. Canonical call: `POST /` with header `X-Amz-Target: RekognitionService.ListCollections`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-amz-json-1.1": {
+              "schema": {
+                "$ref": "#/components/schemas/ListCollectionsRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListCollectionsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListCollectionsResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListCollectionsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "AWS error (InvalidParameterException, ResourceNotFoundException, \u2026)",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/IndexFaces": {
+      "post": {
+        "operationId": "IndexFaces",
+        "tags": [
+          "Faces"
+        ],
+        "summary": "Detect, quality-filter, embed, and store faces from an image.",
+        "description": "AWS JSON-1.1 action **IndexFaces**. Canonical call: `POST /` with header `X-Amz-Target: RekognitionService.IndexFaces`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-amz-json-1.1": {
+              "schema": {
+                "$ref": "#/components/schemas/IndexFacesRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IndexFacesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/IndexFacesResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IndexFacesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "AWS error (InvalidParameterException, ResourceNotFoundException, \u2026)",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ListFaces": {
+      "post": {
+        "operationId": "ListFaces",
+        "tags": [
+          "Faces"
+        ],
+        "summary": "List faces in a collection, paginated via NextToken.",
+        "description": "AWS JSON-1.1 action **ListFaces**. Canonical call: `POST /` with header `X-Amz-Target: RekognitionService.ListFaces`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-amz-json-1.1": {
+              "schema": {
+                "$ref": "#/components/schemas/ListFacesRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListFacesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListFacesResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListFacesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "AWS error (InvalidParameterException, ResourceNotFoundException, \u2026)",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/DeleteFaces": {
+      "post": {
+        "operationId": "DeleteFaces",
+        "tags": [
+          "Faces"
+        ],
+        "summary": "Delete faces from a collection by FaceId.",
+        "description": "AWS JSON-1.1 action **DeleteFaces**. Canonical call: `POST /` with header `X-Amz-Target: RekognitionService.DeleteFaces`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-amz-json-1.1": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteFacesRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteFacesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteFacesResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteFacesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "AWS error (InvalidParameterException, ResourceNotFoundException, \u2026)",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/SearchFacesByImage": {
+      "post": {
+        "operationId": "SearchFacesByImage",
+        "tags": [
+          "Faces"
+        ],
+        "summary": "Embed the largest face in the image and return the nearest matches.",
+        "description": "AWS JSON-1.1 action **SearchFacesByImage**. Canonical call: `POST /` with header `X-Amz-Target: RekognitionService.SearchFacesByImage`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-amz-json-1.1": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchFacesByImageRequest"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchFacesByImageRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchFacesByImageResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchFacesByImageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "AWS error (InvalidParameterException, ResourceNotFoundException, \u2026)",
+            "content": {
+              "application/x-amz-json-1.1": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BoundingBox": {
+        "properties": {
+          "Width": {
+            "title": "Width",
+            "type": "number"
+          },
+          "Height": {
+            "title": "Height",
+            "type": "number"
+          },
+          "Left": {
+            "title": "Left",
+            "type": "number"
+          },
+          "Top": {
+            "title": "Top",
+            "type": "number"
+          }
+        },
+        "required": [
+          "Width",
+          "Height",
+          "Left",
+          "Top"
+        ],
+        "title": "BoundingBox",
+        "type": "object"
+      },
+      "CompareFacesMatch": {
+        "properties": {
+          "Similarity": {
+            "title": "Similarity",
+            "type": "number"
+          },
+          "Face": {
+            "$ref": "#/components/schemas/ComparedFace"
+          }
+        },
+        "required": [
+          "Similarity",
+          "Face"
+        ],
+        "title": "CompareFacesMatch",
+        "type": "object"
+      },
+      "CompareFacesRequest": {
+        "properties": {
+          "SourceImage": {
+            "$ref": "#/components/schemas/Image"
+          },
+          "TargetImage": {
+            "$ref": "#/components/schemas/Image"
+          },
+          "SimilarityThreshold": {
+            "default": 80.0,
+            "title": "Similaritythreshold",
+            "type": "number"
+          }
+        },
+        "required": [
+          "SourceImage",
+          "TargetImage"
+        ],
+        "title": "CompareFacesRequest",
+        "type": "object"
+      },
+      "CompareFacesResponse": {
+        "properties": {
+          "SourceImageFace": {
+            "$ref": "#/components/schemas/ComparedSourceImageFace"
+          },
+          "FaceMatches": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/CompareFacesMatch"
+            },
+            "title": "Facematches",
+            "type": "array"
+          },
+          "UnmatchedFaces": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/ComparedFace"
+            },
+            "title": "Unmatchedfaces",
+            "type": "array"
+          }
+        },
+        "required": [
+          "SourceImageFace"
+        ],
+        "title": "CompareFacesResponse",
+        "type": "object"
+      },
+      "ComparedFace": {
+        "properties": {
+          "BoundingBox": {
+            "$ref": "#/components/schemas/BoundingBox"
+          },
+          "Confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "Landmarks": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Landmark"
+            },
+            "title": "Landmarks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "BoundingBox",
+          "Confidence"
+        ],
+        "title": "ComparedFace",
+        "type": "object"
+      },
+      "ComparedSourceImageFace": {
+        "properties": {
+          "BoundingBox": {
+            "$ref": "#/components/schemas/BoundingBox"
+          },
+          "Confidence": {
+            "title": "Confidence",
+            "type": "number"
+          }
+        },
+        "required": [
+          "BoundingBox",
+          "Confidence"
+        ],
+        "title": "ComparedSourceImageFace",
+        "type": "object"
+      },
+      "CreateCollectionRequest": {
+        "properties": {
+          "CollectionId": {
+            "title": "Collectionid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "CollectionId"
+        ],
+        "title": "CreateCollectionRequest",
+        "type": "object"
+      },
+      "CreateCollectionResponse": {
+        "properties": {
+          "CollectionArn": {
+            "title": "Collectionarn",
+            "type": "string"
+          },
+          "FaceModelVersion": {
+            "title": "Facemodelversion",
+            "type": "string"
+          },
+          "StatusCode": {
+            "default": 200,
+            "title": "Statuscode",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "CollectionArn",
+          "FaceModelVersion"
+        ],
+        "title": "CreateCollectionResponse",
+        "type": "object"
+      },
+      "DeleteCollectionRequest": {
+        "properties": {
+          "CollectionId": {
+            "title": "Collectionid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "CollectionId"
+        ],
+        "title": "DeleteCollectionRequest",
+        "type": "object"
+      },
+      "DeleteCollectionResponse": {
+        "properties": {
+          "StatusCode": {
+            "default": 200,
+            "title": "Statuscode",
+            "type": "integer"
+          }
+        },
+        "title": "DeleteCollectionResponse",
+        "type": "object"
+      },
+      "DeleteFacesRequest": {
+        "properties": {
+          "CollectionId": {
+            "title": "Collectionid",
+            "type": "string"
+          },
+          "FaceIds": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Faceids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "CollectionId",
+          "FaceIds"
+        ],
+        "title": "DeleteFacesRequest",
+        "type": "object"
+      },
+      "DeleteFacesResponse": {
+        "properties": {
+          "DeletedFaces": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Deletedfaces",
+            "type": "array"
+          }
+        },
+        "required": [
+          "DeletedFaces"
+        ],
+        "title": "DeleteFacesResponse",
+        "type": "object"
+      },
+      "DescribeCollectionRequest": {
+        "properties": {
+          "CollectionId": {
+            "title": "Collectionid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "CollectionId"
+        ],
+        "title": "DescribeCollectionRequest",
+        "type": "object"
+      },
+      "DescribeCollectionResponse": {
+        "properties": {
+          "FaceCount": {
+            "title": "Facecount",
+            "type": "integer"
+          },
+          "FaceModelVersion": {
+            "title": "Facemodelversion",
+            "type": "string"
+          },
+          "CollectionArn": {
+            "title": "Collectionarn",
+            "type": "string"
+          },
+          "CreationTimestamp": {
+            "title": "Creationtimestamp",
+            "type": "number"
+          }
+        },
+        "required": [
+          "FaceCount",
+          "FaceModelVersion",
+          "CollectionArn",
+          "CreationTimestamp"
+        ],
+        "title": "DescribeCollectionResponse",
+        "type": "object"
+      },
+      "DetectFacesRequest": {
+        "properties": {
+          "Image": {
+            "$ref": "#/components/schemas/Image"
+          },
+          "Attributes": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Attributes"
+          }
+        },
+        "required": [
+          "Image"
+        ],
+        "title": "DetectFacesRequest",
+        "type": "object"
+      },
+      "DetectFacesResponse": {
+        "properties": {
+          "FaceDetails": {
+            "items": {
+              "$ref": "#/components/schemas/FaceDetail"
+            },
+            "title": "Facedetails",
+            "type": "array"
+          }
+        },
+        "required": [
+          "FaceDetails"
+        ],
+        "title": "DetectFacesResponse",
+        "type": "object"
+      },
+      "FaceDetail": {
+        "properties": {
+          "BoundingBox": {
+            "$ref": "#/components/schemas/BoundingBox"
+          },
+          "Confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "Landmarks": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/Landmark"
+            },
+            "title": "Landmarks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "BoundingBox",
+          "Confidence"
+        ],
+        "title": "FaceDetail",
+        "type": "object"
+      },
+      "FaceMatchShape": {
+        "properties": {
+          "Similarity": {
+            "title": "Similarity",
+            "type": "number"
+          },
+          "Face": {
+            "$ref": "#/components/schemas/FaceShape"
+          }
+        },
+        "required": [
+          "Similarity",
+          "Face"
+        ],
+        "title": "FaceMatchShape",
+        "type": "object"
+      },
+      "FaceRecordShape": {
+        "properties": {
+          "Face": {
+            "$ref": "#/components/schemas/FaceShape"
+          },
+          "FaceDetail": {
+            "$ref": "#/components/schemas/FaceDetail"
+          }
+        },
+        "required": [
+          "Face",
+          "FaceDetail"
+        ],
+        "title": "FaceRecordShape",
+        "type": "object"
+      },
+      "FaceShape": {
+        "description": "The lightweight Face shape AWS returns in collection ops.",
+        "properties": {
+          "FaceId": {
+            "title": "Faceid",
+            "type": "string"
+          },
+          "BoundingBox": {
+            "$ref": "#/components/schemas/BoundingBox"
+          },
+          "ImageId": {
+            "title": "Imageid",
+            "type": "string"
+          },
+          "ExternalImageId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Externalimageid"
+          },
+          "Confidence": {
+            "title": "Confidence",
+            "type": "number"
+          }
+        },
+        "required": [
+          "FaceId",
+          "BoundingBox",
+          "ImageId",
+          "Confidence"
+        ],
+        "title": "FaceShape",
+        "type": "object"
+      },
+      "Image": {
+        "properties": {
+          "Bytes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bytes"
+          },
+          "S3Object": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/S3Object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          }
+        },
+        "title": "Image",
+        "type": "object"
+      },
+      "IndexFacesRequest": {
+        "properties": {
+          "CollectionId": {
+            "title": "Collectionid",
+            "type": "string"
+          },
+          "Image": {
+            "$ref": "#/components/schemas/Image"
+          },
+          "ExternalImageId": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Externalimageid"
+          },
+          "MaxFaces": {
+            "default": 1,
+            "title": "Maxfaces",
+            "type": "integer"
+          },
+          "QualityFilter": {
+            "$ref": "#/components/schemas/QualityFilter",
+            "default": "AUTO"
+          },
+          "DetectionAttributes": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Detectionattributes"
+          }
+        },
+        "required": [
+          "CollectionId",
+          "Image"
+        ],
+        "title": "IndexFacesRequest",
+        "type": "object"
+      },
+      "IndexFacesResponse": {
+        "properties": {
+          "FaceRecords": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/FaceRecordShape"
+            },
+            "title": "Facerecords",
+            "type": "array"
+          },
+          "UnindexedFaces": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/UnindexedFaceShape"
+            },
+            "title": "Unindexedfaces",
+            "type": "array"
+          },
+          "FaceModelVersion": {
+            "title": "Facemodelversion",
+            "type": "string"
+          }
+        },
+        "required": [
+          "FaceModelVersion"
+        ],
+        "title": "IndexFacesResponse",
+        "type": "object"
+      },
+      "Landmark": {
+        "properties": {
+          "Type": {
+            "title": "Type",
+            "type": "string"
+          },
+          "X": {
+            "title": "X",
+            "type": "number"
+          },
+          "Y": {
+            "title": "Y",
+            "type": "number"
+          }
+        },
+        "required": [
+          "Type",
+          "X",
+          "Y"
+        ],
+        "title": "Landmark",
+        "type": "object"
+      },
+      "ListCollectionsRequest": {
+        "properties": {
+          "MaxResults": {
+            "default": 100,
+            "title": "Maxresults",
+            "type": "integer"
+          },
+          "NextToken": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nexttoken"
+          }
+        },
+        "title": "ListCollectionsRequest",
+        "type": "object"
+      },
+      "ListCollectionsResponse": {
+        "properties": {
+          "CollectionIds": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Collectionids",
+            "type": "array"
+          },
+          "FaceModelVersions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Facemodelversions",
+            "type": "array"
+          },
+          "NextToken": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nexttoken"
+          }
+        },
+        "required": [
+          "CollectionIds",
+          "FaceModelVersions"
+        ],
+        "title": "ListCollectionsResponse",
+        "type": "object"
+      },
+      "ListFacesRequest": {
+        "properties": {
+          "CollectionId": {
+            "title": "Collectionid",
+            "type": "string"
+          },
+          "MaxResults": {
+            "default": 1000,
+            "title": "Maxresults",
+            "type": "integer"
+          },
+          "NextToken": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nexttoken"
+          }
+        },
+        "required": [
+          "CollectionId"
+        ],
+        "title": "ListFacesRequest",
+        "type": "object"
+      },
+      "ListFacesResponse": {
+        "properties": {
+          "Faces": {
+            "items": {
+              "$ref": "#/components/schemas/FaceShape"
+            },
+            "title": "Faces",
+            "type": "array"
+          },
+          "FaceModelVersion": {
+            "title": "Facemodelversion",
+            "type": "string"
+          },
+          "NextToken": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Nexttoken"
+          }
+        },
+        "required": [
+          "Faces",
+          "FaceModelVersion"
+        ],
+        "title": "ListFacesResponse",
+        "type": "object"
+      },
+      "QualityFilter": {
+        "enum": [
+          "NONE",
+          "AUTO",
+          "LOW",
+          "MEDIUM",
+          "HIGH"
+        ],
+        "title": "QualityFilter",
+        "type": "string"
+      },
+      "S3Object": {
+        "properties": {
+          "Bucket": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Bucket"
+          },
+          "Name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Name"
+          },
+          "Version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Version"
+          }
+        },
+        "title": "S3Object",
+        "type": "object"
+      },
+      "SearchFacesByImageRequest": {
+        "properties": {
+          "CollectionId": {
+            "title": "Collectionid",
+            "type": "string"
+          },
+          "Image": {
+            "$ref": "#/components/schemas/Image"
+          },
+          "MaxFaces": {
+            "default": 5,
+            "title": "Maxfaces",
+            "type": "integer"
+          },
+          "FaceMatchThreshold": {
+            "default": 80.0,
+            "title": "Facematchthreshold",
+            "type": "number"
+          },
+          "QualityFilter": {
+            "$ref": "#/components/schemas/QualityFilter",
+            "default": "AUTO"
+          }
+        },
+        "required": [
+          "CollectionId",
+          "Image"
+        ],
+        "title": "SearchFacesByImageRequest",
+        "type": "object"
+      },
+      "SearchFacesByImageResponse": {
+        "properties": {
+          "SearchedFaceBoundingBox": {
+            "$ref": "#/components/schemas/BoundingBox"
+          },
+          "SearchedFaceConfidence": {
+            "title": "Searchedfaceconfidence",
+            "type": "number"
+          },
+          "FaceMatches": {
+            "default": [],
+            "items": {
+              "$ref": "#/components/schemas/FaceMatchShape"
+            },
+            "title": "Facematches",
+            "type": "array"
+          },
+          "FaceModelVersion": {
+            "title": "Facemodelversion",
+            "type": "string"
+          }
+        },
+        "required": [
+          "SearchedFaceBoundingBox",
+          "SearchedFaceConfidence",
+          "FaceModelVersion"
+        ],
+        "title": "SearchFacesByImageResponse",
+        "type": "object"
+      },
+      "UnindexedFaceShape": {
+        "properties": {
+          "Reasons": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Reasons",
+            "type": "array"
+          },
+          "FaceDetail": {
+            "$ref": "#/components/schemas/FaceDetail"
+          }
+        },
+        "required": [
+          "Reasons",
+          "FaceDetail"
+        ],
+        "title": "UnindexedFaceShape",
+        "type": "object"
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "__type": {
+            "type": "string",
+            "examples": [
+              "InvalidParameterException"
+            ]
+          },
+          "Message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "__type"
+        ]
+      }
+    }
+  }
+}
