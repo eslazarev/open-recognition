@@ -2,7 +2,7 @@ apiVersion: v2
 name: open-recognition
 description: Self-hosted, boto3-compatible AWS Rekognition Faces API. Detect, index, compare and search faces (YuNet detection + SFace embeddings) backed by PostgreSQL/pgvector, with a built-in HTMX playground UI. Drop-in for the AWS Rekognition JSON-1.1 protocol.
 type: application
-version: 0.1.0
+version: 0.1.1
 appVersion: "latest"
 home: https://github.com/eslazarev/open-recognition
 icon: https://raw.githubusercontent.com/eslazarev/open-recognition/main/.github/images/logo.png
